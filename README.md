@@ -2,12 +2,12 @@
 
 Based on Bicep CARML modules which are hosted on the following github repo: https://github.com/Azure/ResourceModules
 
-This repo provides fast deployment of the following components meeting IL5 compliance by leveraging customer managed keys (CMK) (provisioned in a keyvault) and private endpoints (leveraging associated private dns zones):
+This repo provides fast deployment of the following components with Azure configuration fitting into IL5 compliance requirements by leveraging customer managed keys (CMK) (provisioned in a keyvault) and private endpoints (leveraging associated private dns zones):
 
 - Keyvault
 - Storage
 - Azure Container Registry
-- AKS
+- AKS (Note Azure Dedicated Hosts are not supported with AKS)
 
 To deploy, Azure DevOps Server/Services .yml pipelines and associated .bicep files containing all the security components are within this repo. If you don't have Azure DevOps available, you can leverage the Azure CLI commands within them directly.
 
