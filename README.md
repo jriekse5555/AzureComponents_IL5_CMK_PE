@@ -5,9 +5,9 @@ Based on Bicep CARML modules which are hosted on the following github repo: http
 This repo provides fast deployment of the following components with Azure configuration fitting into IL5 compliance requirements by leveraging customer managed keys (CMK) (provisioned in a keyvault) and private endpoints (leveraging associated private dns zones):
 
 - Keyvault
-- Storage
-- Azure Container Registry
-- AKS (Note Azure Dedicated Hosts are not supported with AKS)
+- Storage Account
+- Azure Container Registry (ACR)
+- AKS (with Keyvault, Storage Account and ACR)
 
 For a quick reference on IL5 see: https://docs.microsoft.com/en-us/compliance/regulatory/offering-dod-il5
 
@@ -26,3 +26,5 @@ Copy of CARML modules made for simpicity around 7/1/2022 with slight refinements
 - Keyvault\Keys - Added an output to support DES (Latest DES module no longer needs this)
 
 Numerous improvements are made to the central CARML repo on a recurring basis so its recommended that you evaluate the latest module versions as needed. The copy is leveraged to ensure highest compatibility. There are also several CARML versioning methods that can be used instead if all your environments support this and you are interested in more dynamic methods.
+
+Note Azure Dedicated Hosts are not supported with AKS so IL5 compliance would require using VM sku sizes that take the entire host (or seeking an exception)
