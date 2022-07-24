@@ -9,6 +9,13 @@ This repo provides fast deployment of the following components with Azure config
 - Azure Container Registry
 - AKS (Note Azure Dedicated Hosts are not supported with AKS)
 
+Prequisites for use are:
+- Existing virtual network
+- Existing subnet large enough to hold AKS node pools (30 IPs per node is the set default)
+- Existing subnet with private endpoint policies disable to allow addition of private endpoints
+- Existing Private DNS Zone for objects deployed (AKS, Storage (File/Blob), Keyvault, ACR)
+- Storage and ACR require the keyvault is deployed first (to hold the CMK)
+
 To deploy, Azure DevOps Server/Services .yml pipelines and associated .bicep files containing all the security components are within this repo. If you don't have Azure DevOps available, you can leverage the Azure CLI commands within them directly.
 
 Copy of CARML modules made for simpicity around 7/1/2022 with slight refinements made for the following modules:
