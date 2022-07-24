@@ -9,7 +9,7 @@ This repo provides fast deployment of the following components meeting IL5 compl
 - Azure Container Registry
 - AKS
 
-To deploy, Azure DevOps .yml pipelines and consolidated .bicep files are provided.
+To deploy, Azure DevOps Server/Services .yml pipelines and associated .bicep files containing all the security components are within this repo. If you don't have Azure DevOps available, you can leverage the Azure CLI commands within them directly.
 
 Copy of CARML modules made for simpicity around 7/1/2022 with slight refinements made for the following modules:
 
