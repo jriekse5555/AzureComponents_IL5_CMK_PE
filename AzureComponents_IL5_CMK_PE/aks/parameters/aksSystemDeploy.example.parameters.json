@@ -1,0 +1,133 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "dnsZoneRgpName": {
+            "value": "<rg name>"
+        },
+        "dnsZoneRgpSubId": {
+            "value": "<subid>"
+        },
+        "cmkDESRoles": {
+            "value": [
+                "aks"
+            ]
+        },
+        "storageAccountSku": {
+            "value": "Standard_ZRS"
+        },
+        "fileShares": {
+            "value": [
+                "<filesharename>"
+            ]
+        },
+        "aksClusterNetworkPlugin": {
+            "value": "azure"
+        },
+        "aksClusterNetworkPolicy": {
+            "value": "azure"
+        },
+        "aksClusterServiceCidr": {
+            "value": "10.100.0.0/16"
+        },
+        "aksClusterDnsServiceIP": {
+            "value": "10.100.0.10"
+        },
+        "aksClusterDockerBridgeCidr": {
+            "value": "172.17.0.1/16"
+        },
+        "aksClusterSkuTier": {
+            "value": "Paid"
+        },
+        "aksClusterKubernetesVersion": {
+            "value": "1.22.4"
+        },
+        "aadProfileAdminGroupObjectIDs": {
+            "value": [
+                "<objectid>"
+            ]
+        },
+        "aksPrivateDNSZoneId": {
+            "value": "<aksprivatednszoneresourceid>"
+        },
+        "aadProfileManaged": {
+            "value": true
+        },
+        "aadProfileEnableAzureRBAC": {
+            "value": true
+        },
+        "disableLocalAccounts": {
+            "value": true
+        },
+        "enablePrivateCluster": {
+            "value": true
+        },
+        "primaryAgentPoolProfile": {
+            "value": [
+                {
+                    "name": "sysnodepool",
+                    "osDiskSizeGB": 0,
+                    "count": 1,
+                    "enableAutoScaling": true,
+                    "minCount": 1,
+                    "maxCount": 3,
+                    "vmSize": "standard_b2s",
+                    "osType": "Linux",
+                    "storageProfile": "ManagedDisks",
+                    "type": "VirtualMachineScaleSets",
+                    "mode": "System",
+                    "vnetSubnetID": "<subnetresourceid>",
+                    "maxPods": 30,
+                    "availabilityZones": [
+                    ],
+                    "nodeTaints": [
+                        "CriticalAddonsOnly=true:NoSchedule"
+                    ]
+                }
+            ]
+        },
+        "agentPools": {
+            "value": [
+                {
+                    "name": "nodepoolx",
+                    "vmSize": "standard_b2s",
+                    "osDiskSizeGB": 128,
+                    "count": 2,
+                    "osType": "Linux",
+                    "maxCount": 3,
+                    "minCount": 1,
+                    "enableEncryptionAtHost": true,
+                    "enableAutoScaling": true,
+                    "scaleSetPriority": "Regular",
+                    "scaleSetEvictionPolicy": "Delete",
+                    "nodeLabels": {
+                        "node":"nodepoolx"
+                    },
+                    "nodeTaints": [
+                        "nodepoolx=true:NoSchedule"
+                    ],
+                    "type": "VirtualMachineScaleSets",
+                    "availabilityZones": [
+                    ],
+                    "minPods": 1,
+                    "maxPods": 30,
+                    "storageProfile": "ManagedDisks",
+                    "mode": "User",
+                    "vnetSubnetID": "<subnetresourceid>"
+                }
+            ]
+        },
+        "enableKeyvaultSecretsProvider": {
+            "value": true
+        },
+        "enableSecretRotation": {
+            "value": "true"
+        },
+        "enableAzureDefender": {
+            "value": false
+        },
+        "managedOutboundIPCount": {
+            "value": 1
+        }
+    }
+}

@@ -1,0 +1,116 @@
+#Pre-reqs:
+#- Virtual networks
+#- Resource Groups
+#- Private DNS Zones for Storage Account File Shares/Blob, Keyvault, ACR, and AKS
+
+#What is Deployed:
+#- (Task 1 in the pipeline) Keyvault with Private Endpoints, using CMKs
+#    Why? - Re-deploying keyvaults wipes out access policies which is problematic for one-time DES permissions
+#- (Task 2 in the pipeline leveraging a separate complex parameter file for additionl parameters)
+#  - User Managed Identities
+#  - Array of Customer Managed Keys
+#  - Associated Disk Encryption Sets
+#  - Keyvault with Private Endpoints, using CMKs
+#  - Storage Account with Private Endpoints, using CMKs, and File Shares
+#  - Acr with Private Endpoint, using CMK
+#  - Aks Private Cluster using Disk Encryption Set with Configurable Node Pools
+
+trigger:
+- none
+
+parameters:
+- name: il
+  displayName: Deployment IL ie. IL5
+  type: string
+  default: il5
+- name: privateLinkSubnetName
+  displayName: Existing Private Endpoint Subnet Name
+  type: string
+  default: <PrivateLinkSubnetName>
+- name: kvtAadObjId
+  displayName: Azure AD Group Object ID for Keyvault Access
+  type: string
+  default: <objectid>
+- name: logAnalyticsResourceId
+  displayName: Advanced - Existing Log Analytics Resource Id
+  type: string
+  default: <resourceid>
+- name: kvtPrivateDNSZoneResourceId
+  displayName: Advanced - Existing Keyvault Private DNS Zone
+  type: string
+  default: <resourceid>
+
+variables:
+  prj: tst
+  deployRg: <rg>
+  serviceConnection: '<ADOServiceConnection'
+  rootPath: '$(System.DefaultWorkingDirectory)/AzureComponents_IL5_CMK_PE'
+  kvtName: '${{ variables.prj }}${{ parameters.il }}kvt'
+  vnetName: '<vnetName>'
+  vnetRgp: '<vnetRgp>'
+
+pool:
+  name: 'Azure Pipelines'
+steps:
+- checkout: self
+
+- task: PowerShell@2
+  displayName: Setup tools
+  inputs:
+    targetType: inline
+    pwsh: true
+    script: |
+      az --version
+
+      az bicep version
+      if (0 -ne $LASTEXITCODE) {
+        az bicep install
+      } else {
+        az bicep upgrade
+      }
+
+- task: AzureCLI@2
+  displayName: Deploy Keyvault
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+      az keyvault show -n $(kvtName) -g $(deployRg)
+      if (0 -ne $LASTEXITCODE) {
+
+        $deploymentName = "keyvault-deploy-$((get-date).ToString('MMddyyyy-hhmmss'))"
+
+        az deployment group create -n $deploymentName -g $(deployRgp) `
+          --template-file $(rootPath)/kvtDeployCarml.bicep `
+          --parameters kvtName=$(kvtName) `
+                       kvtRgpName=$(deployRgp) `
+                       privateLinkSubnetName=${{ parameters.privateLinkSubnetName }} `
+                       vnetName=$(vnetName) `
+                       vnetRgp=$(vnetRgp) `
+                       logAnalyticsResourceId=${{ parameters.logAnalyticsResourceId }} `
+                       kvtAadObjId=${{ parameters.kvtAadObjId }} `
+                       kvtPrivateDNSZoneResourceId=${{ parameters.kvtPrivateDNSZoneResourceId }}
+      }
+
+- task: AzureCLI@2
+  displayName: Deploy AKS system
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+        $deploymentName = "aks-deploy-$((get-date).ToString('MMddyyyy-hhmmss'))"
+
+        az deployment group create -n $deploymentName -g '$(deployRg)' `
+          --template-file $(rootPath)aksSystemDeploy.bicep `
+          --parameters "@$(rootPath)/parameters/aksSystemDeploy.example.parameters.json" `
+                        prj=$(prj) `
+                        il=${{ parameters.il }} `
+                        vnetName=$(vnetName) `
+                        vnetRgp=$(vnetRgp) `
+                        privateLinkSubnetName=${{ parameters.privateLinkSubnetName }} `
+                        kvtName=$(kvtName) `
+                        priRgpName=$(deployRgp) `
+                        logAnalyticsResourceId=${{ parameters.logAnalyticsResourceId }}
+

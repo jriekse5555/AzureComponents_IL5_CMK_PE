@@ -1,0 +1,89 @@
+
+trigger:
+- none
+
+parameters:
+- name: role
+  displayName: Optional - Replace empty with role 6 characters max i.e. AZDO
+  type: string
+  default: empty
+- name: serviceConnection
+  displayName: Azure DevOps Server Service Connection
+  type: string
+  default: <serviceConnection>
+  values:
+  - '<serviceConnection>'
+- name: il
+  displayName: Advanced - Impact Level i.e. IL5
+  type: string
+  default: il5
+- name: privateLinkSubnetName
+  displayName: Advanced - Existing Private Endpoint Subnet Name
+  type: string
+  default: <PrivateLinkSubnetName>
+- name: logAnalyticsResourceId
+  displayName: Advanced - Existing Log Analytics Resource Id
+  type: string
+  default: <resourceid>
+- name: kvtPrivateDNSZoneResourceId
+  displayName: Advanced - Existing Keyvault Private DNS Zone
+  type: string
+  default: <resourceid>
+- name: kvtAadObjId
+  displayName: Advanced - Existing Azure AD Group to Assign to Access Policy
+  type: string
+  default: <objectid>
+
+
+variables:
+  prj: 'tst'
+  deployRgp: '<rg>'
+  vnetName: '<vnetName>'
+  vnetRgp: '<vnetRgp>'
+  rootpath: '$(System.DefaultWorkingDirectory)/AzureComponents_IL5_CMK_PE'
+
+pool:
+  name: 'Azure Pipelines'
+steps:
+- checkout: self
+
+- task: PowerShell@2
+  displayName: Setup tools
+  inputs:
+    targetType: inline
+    pwsh: true
+    script: |
+      az --version
+
+      az bicep version
+      if (0 -ne $LASTEXITCODE) {
+        az bicep install
+      } else {
+        az bicep upgrade
+      }
+
+- task: AzureCLI@2
+  displayName: Deploy Keyvault
+  inputs:
+    azureSubscription: ${{ parameters.serviceConnection }}
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+        $deploymentName = "keyvault-deploy-$((get-date).ToString('MMddyyyy-hhmmss'))"
+
+        if ("${{ parameters.role }}" -ne "empty") {
+          $kvtName = "${{ lower(variables.prj) }}${{ lower(parameters.il) }}${{ lower(parameters.role) }}kvt"
+        } else {
+          $kvtName = "${{ lower(variables.prj) }}${{ lower(parameters.il) }}kvt"
+        }
+
+        az deployment group create -n $deploymentName -g $(deployRgp) `
+          --template-file $(rootPath)/kvtDeployCarml.bicep `
+          --parameters kvtName=$kvtName `
+                       kvtRgpName=$(deployRgp) `
+                       privateLinkSubnetName=${{ parameters.privateLinkSubnetName }} `
+                       vnetName=$(vnetName) `
+                       vnetRgp=$(vnetRgp) `
+                       logAnalyticsResourceId=${{ parameters.logAnalyticsResourceId }} `
+                       kvtAadObjId=${{ parameters.kvtAadObjId }} `
+                       kvtPrivateDNSZoneResourceId=${{ parameters.kvtPrivateDNSZoneResourceId }}

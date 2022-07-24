@@ -1,0 +1,113 @@
+
+trigger:
+- none
+
+parameters:
+- name: role
+  displayName: Optional - Replace empty with role 6 characters max i.e. AZDO
+  type: string
+  default: empty
+- name: serviceConnection
+  displayName: Azure DevOps Server Service Connection
+  type: string
+  default: <serviceConnection>
+  values:
+  - '<serviceConnection>'
+- name: il
+  displayName: Advanced - Impact Level i.e. IL5
+  type: string
+  default: il5
+- name: privateLinkSubnetName
+  displayName: Advanced - Existing Private Endpoint Subnet Name
+  type: string
+  default: <PrivateLinkSubnetName>
+- name: logAnalyticsResourceId
+  displayName: Advanced - Existing Log Analytics Resource Id
+  type: string
+  default: <resourceid>
+- name: storageAccountKind
+  displayName: Advanced - Storage Account Kind
+  type: string
+  default: StorageV2
+- name: storageAccountSku
+  displayName: Advanced - Storage Account Sku
+  type: string
+  default: Standard_ZRS
+- name: dnsZoneRgpName
+  displayName: Advanced - Existing Private DNS Zone Resource Group Name
+  type: string
+  default: <rg>
+- name: dnsZoneRgpSubId
+  displayName: Advanced - Existing Private DNS Zone Sub Id
+  type: string
+  default: <subid>
+- name: kvtName
+  displayName: Advanced - Existing KeyVault Name
+  type: string
+  default: <kvtname>
+- name: kvtRgpName
+  displayName: Advanced - Existing KeyVault Resource Group Name
+  type: string
+  default: <kvtrg>
+- name: kvtRgpSubId
+  displayName: Advanced - Existing KeyVault Subscription Id
+  type: string
+  default: <kbtsubid>
+
+variables:
+  prj: 'tst'
+  deployRgp: '<rg>'
+  vnetName: '<vnetName>'
+  vnetRgp: '<vnetRgp>'
+  rootpath: '$(System.DefaultWorkingDirectory)/AzureComponents_IL5_CMK_PE'
+
+pool:
+  name: 'Azure Pipelines'
+steps:
+- checkout: self
+
+- task: PowerShell@2
+  displayName: Setup tools
+  inputs:
+    targetType: inline
+    pwsh: true
+    script: |
+      az --version
+
+      az bicep version
+      if (0 -ne $LASTEXITCODE) {
+        az bicep install
+      } else {
+        az bicep upgrade
+      }
+
+- task: AzureCLI@2
+  displayName: Deploy Storage
+  inputs:
+    azureSubscription: ${{ parameters.serviceConnection }}
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+        $deploymentName = "storage-deploy-$((get-date).ToString('MMddyyyy-hhmmss'))"
+
+        if ("${{ parameters.role }}" -ne "empty") {
+          $stgName = "${{ lower(variables.prj) }}${{ lower(parameters.il) }}${{ lower(parameters.role) }}stg"
+        } else {
+          $stgName = "${{ lower(variables.prj) }}${{ lower(parameters.il) }}stg"
+        }
+
+        az deployment group create -n $deploymentName -g $(deployRgp) `
+          --template-file $(rootPath)/stgDeployCarml.bicep `
+          --parameters stgName=$stgName `
+                       stgRgpName=$(deployRgp) `
+                       privateLinkSubnetName=${{ parameters.privateLinkSubnetName }} `
+                       vnetName=$(vnetName) `
+                       vnetRgp=$(vnetRgp) `
+                       logAnalyticsResourceId=${{ parameters.logAnalyticsResourceId }} `
+                       storageAccountKind=${{ parameters.storageAccountKind }} `
+                       storageAccountSku=${{ parameters.storageAccountSku }} `
+                       dnsZoneRgpName=${{ parameters.dnsZoneRgpName }} `
+                       dnsZoneRgpSubId=${{ parameters.dnsZoneRgpSubId }} `
+                       kvtName=${{ parameters.kvtName }} `
+                       kvtRgpName=${{ parameters.kvtRgpName }} `
+                       kvtRgpSubId=${{ parameters.kvtRgpSubId }}
