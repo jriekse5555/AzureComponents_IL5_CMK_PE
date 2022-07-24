@@ -11,7 +11,7 @@ This repo provides fast deployment of the following components with Azure config
 
 Prequisites for use are:
 - Existing virtual network
-- Existing subnet large enough to hold AKS node pools (30 IPs per node is the set default)
+- Existing subnet large enough to hold AKS node pools (30 IPs per node pool is the set default)
 - Existing subnet with private endpoint policies disable to allow addition of private endpoints
 - Existing Private DNS Zone for objects deployed (AKS, Storage (File/Blob), Keyvault, ACR)
 - Storage and ACR require the keyvault is deployed first (to hold the CMK)
