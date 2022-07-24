@@ -14,7 +14,7 @@ For a quick reference on IL5 see: https://docs.microsoft.com/en-us/compliance/re
 Prequisites for use are:
 - Existing virtual network
 - Existing subnet with private endpoint policies disabled to allow addition of private endpoints
-- Existing Private DNS Zone for objects deployed (AKS, Storage (File/Blob), Keyvault, ACR)
+- Existing Private DNS Zone for objects deployed (AKS, Storage (File/Blob), Keyvault, ACR) AND linked to the virtual network planned for DNS resolution.
 - (For AKS) Existing subnet large enough to hold AKS node pools (30 IPs per node pool is the set default)
 - (For Storage and ACR) Keyvault is deployed first (to hold the CMK)
 
