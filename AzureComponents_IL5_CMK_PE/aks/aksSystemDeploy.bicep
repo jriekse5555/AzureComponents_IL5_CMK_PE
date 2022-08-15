@@ -207,7 +207,7 @@ module assignAksUmiToPrivateDnsZoneResourceGroup '../../bicepModules/Identity/ro
 }
 
 @description('Assign the AKS UMI as a Network Contributor on the Resource Group that owns the Virtual Network')
-module asssignNetworkContributor '../../bicepModules/Identity/role.bicep' = {
+module assignNetworkContributor '../../bicepModules/Identity/role.bicep' = {
   name: 'assign-umi-to-vnetrgp-${uniqueString(deployment().name)}'
   scope: resourceGroup(vnetRgp)
   params: {
