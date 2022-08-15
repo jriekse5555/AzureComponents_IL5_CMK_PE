@@ -18,7 +18,7 @@ Prequisites for use are:
 - (For AKS) Existing subnet large enough to hold AKS node pools (30 IPs per node pool is the set default)
 - (For Storage and ACR) Keyvault is deployed first (to hold the CMK)
 
-To deploy, Azure DevOps Server/Services .yml pipelines and associated .bicep files containing all the security components are within this repo. If you don't have Azure DevOps available, you can leverage the Azure CLI commands within them directly.
+To deploy, Azure DevOps (Server OR Services) .yml pipelines and associated .bicep files containing all the security components are within this repo. If you don't have Azure DevOps available, you can leverage the Azure CLI commands within them directly.
 
 Copy of CARML modules made for simpicity around 7/1/2022 with slight refinements made for the following modules:
 
