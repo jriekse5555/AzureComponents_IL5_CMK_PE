@@ -82,7 +82,7 @@ steps:
         $deploymentName = "keyvault-deploy-$((get-date).ToString('MMddyyyy-hhmmss'))"
 
         az deployment group create -n $deploymentName -g $(deployRgp) `
-          --template-file $(rootPath)/kvtDeployCarml.bicep `
+          --template-file $(rootPath)/keyvault/kvtDeployCarml.bicep `
           --parameters kvtName=$(kvtName) `
                        kvtRgpName=$(deployRgp) `
                        privateLinkSubnetName=${{ parameters.privateLinkSubnetName }} `
@@ -103,8 +103,8 @@ steps:
         $deploymentName = "aks-deploy-$((get-date).ToString('MMddyyyy-hhmmss'))"
 
         az deployment group create -n $deploymentName -g '$(deployRgp)' `
-          --template-file $(rootPath)aksSystemDeploy.bicep `
-          --parameters "@$(rootPath)/parameters/aksSystemDeploy.example.parameters.json" `
+          --template-file $(rootPath)/aks/aksSystemDeploy.bicep `
+          --parameters "@$(rootPath)/aks/parameters/aksSystemDeploy.example.parameters.json" `
                         prj=$(prj) `
                         il=${{ parameters.il }} `
                         vnetName=$(vnetName) `
