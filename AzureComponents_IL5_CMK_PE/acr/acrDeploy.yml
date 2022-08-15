@@ -89,7 +89,7 @@ steps:
         }
 
         az deployment group create -n $deploymentName -g $(deployRgp) `
-          --template-file $(rootPath)/acrDeployCarml.bicep `
+          --template-file $(rootPath)/acr/acrDeployCarml.bicep `
           --parameters acrName=$acrName `
                        acrRgpName=$(deployRgp) `
                        privateLinkSubnetName=${{ parameters.privateLinkSubnetName }} `

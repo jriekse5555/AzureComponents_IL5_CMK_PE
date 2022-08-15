@@ -97,7 +97,7 @@ steps:
         }
 
         az deployment group create -n $deploymentName -g $(deployRgp) `
-          --template-file $(rootPath)/stgDeployCarml.bicep `
+          --template-file $(rootPath)/storage/stgDeployCarml.bicep `
           --parameters stgName=$stgName `
                        stgRgpName=$(deployRgp) `
                        privateLinkSubnetName=${{ parameters.privateLinkSubnetName }} `
