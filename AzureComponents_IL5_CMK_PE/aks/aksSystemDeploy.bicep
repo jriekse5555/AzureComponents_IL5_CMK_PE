@@ -432,7 +432,7 @@ module stg '../../carmlBicepModules/Microsoft.Storage/storageAccounts/deploy.bic
 }
 
 @description('Create shares')
-module stgShares '../../carmlBicepModules/Microsoft.Storage/storageAccounts/fileServices/deploy.bicep' = [for share in fileShares: {
+module stgShares '../../carmlBicepModules/Microsoft.Storage/storageAccounts/fileServices/shares/deploy.bicep' = [for share in fileShares: {
   name: 'stg-${share}-${uniqueString(deployment().name)}'
   scope: resourceGroup(priRgpName)
   params: {
