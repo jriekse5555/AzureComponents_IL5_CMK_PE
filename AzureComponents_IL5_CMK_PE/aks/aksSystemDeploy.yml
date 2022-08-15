@@ -42,7 +42,7 @@ parameters:
 
 variables:
   prj: tst
-  deployRg: <rg>
+  deployRgp: <rg>
   serviceConnection: '<ADOServiceConnection'
   rootPath: '$(System.DefaultWorkingDirectory)/AzureComponents_IL5_CMK_PE'
   kvtName: '${{ variables.prj }}${{ parameters.il }}kvt'
@@ -76,7 +76,7 @@ steps:
     scriptType: pscore
     scriptLocation: inlineScript
     inlineScript: |
-      az keyvault show -n $(kvtName) -g $(deployRg)
+      az keyvault show -n $(kvtName) -g $(deployRgp)
       if (0 -ne $LASTEXITCODE) {
 
         $deploymentName = "keyvault-deploy-$((get-date).ToString('MMddyyyy-hhmmss'))"
@@ -102,7 +102,7 @@ steps:
     inlineScript: |
         $deploymentName = "aks-deploy-$((get-date).ToString('MMddyyyy-hhmmss'))"
 
-        az deployment group create -n $deploymentName -g '$(deployRg)' `
+        az deployment group create -n $deploymentName -g '$(deployRgp)' `
           --template-file $(rootPath)aksSystemDeploy.bicep `
           --parameters "@$(rootPath)/parameters/aksSystemDeploy.example.parameters.json" `
                         prj=$(prj) `
