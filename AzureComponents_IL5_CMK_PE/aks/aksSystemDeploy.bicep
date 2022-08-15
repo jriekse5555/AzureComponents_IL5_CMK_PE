@@ -333,6 +333,9 @@ module acr '../../carmlBicepModules/Microsoft.ContainerRegistry/registries/deplo
       }
     ]
   }
+  dependsOn: [
+    assignAcrUmiToKvt
+  ]
 }
 
 @description('Calculate storage account file Private DNS Zone resource id')
@@ -423,6 +426,9 @@ module stg '../../carmlBicepModules/Microsoft.Storage/storageAccounts/deploy.bic
       }
     ]
   }
+  dependsOn: [
+    assignStgUmiToKvt
+  ]
 }
 
 @description('Create shares')
