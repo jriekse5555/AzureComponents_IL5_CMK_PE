@@ -25,6 +25,8 @@ Copy of CARML modules made for simpicity around 7/1/2022 with slight refinements
 - AKS (to enable Disk Encryption Set linked to CMK AND central AKS private DNS zone)
 - Keyvault\Keys - Added an output to support DES (Latest DES module no longer needs this)
 
-Numerous improvements are made to the central CARML repo on a recurring basis so its recommended that you evaluate the latest module versions as needed. The copy is leveraged to ensure highest compatibility. There are also several CARML versioning methods that can be used instead if all your environments support this and you are interested in more dynamic methods.
+Numerous improvements are made to the central CARML repo on a recurring basis so its recommended that you evaluate the latest module versions as needed. The copy is leveraged to ensure changes don't break existing code. There are also several CARML versioning methods that can be used instead if all your environments support this and you are interested in more dynamic methods.
 
 Note Azure Dedicated Hosts are not supported with AKS so IL5 compliance would require using VM sku sizes that take the entire host (or seeking an exception)
+
+Note that the Azure DevOps Server Pipelines that are published rely on the AZ Cli ADO task. This task calls az commands using a cmd /c command and passes the required parameters including the service principal password. If you are using Windows self-hosted build agents and the Windows advanced auditing setting 'Audit Process Creation' this will capture the process creation command line and save the service principal password in the audit logs. Consider certificate based service principal authentication or avoiding this audit setting for Windows build agents. 
