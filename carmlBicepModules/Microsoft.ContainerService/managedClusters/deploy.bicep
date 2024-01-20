@@ -274,7 +274,7 @@ param diagnosticEventHubName string = ''
 @description('Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely.')
 @minValue(0)
 @maxValue(365)
-param diagnosticLogsRetentionInDays int = 365
+param diagnosticLogsRetentionInDays int = 0
 
 @description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
 param enableDefaultTelemetry bool = true
