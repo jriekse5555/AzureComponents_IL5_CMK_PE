@@ -46,7 +46,7 @@ The simplest way to test the system is to do the following:
 - Create an Azure quota to ensure you don't spend too much
 - Create an Azure resource group, virtual network, subnet, and nsg (you may want to use a region that isn't heavily used)
 - Create an Azure virtual machine (preferrably using a spot instance to save on cost)
-- Create a rule in the Azure nsg allowing only with the public IP that you are using via RDP to ensure your Azure VM is protected
+- Create a rule in the Azure nsg allowing only the public IP that you are using via RDP to ensure your Azure VM is protected (a website like https://whatismyipaddress.com/ can show you the public ip you are using)
 - Create an Azure service principal (in Entra ID app registrations) and grant it access as Owner (for AKS) to your resource group or subscription
 - Back in ADO, create a service connection with the previous service principal's information
 - Edit one of the ADO .yml pipelines (in the repo) with your Azure information
