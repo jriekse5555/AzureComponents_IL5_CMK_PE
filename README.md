@@ -39,7 +39,7 @@ The simplest way to test the system is to do the following:
 - Download this github repo as a .zip
 - Request a free Azure DevOps Services organization at https://dev.azure.com
 - Create a new Azure DevOps Services (ADO) project
-- Initialize the a repo in the project
+- Initialize the repo in the project
 - Clone the repo locally using the ADO GUI and Visual Studio Code
 - Add the contents of the .zip downloaded earlier into the clone using Windows explorer, and use Visual Studio Code's git interface to create a commit and push the code to ADO
 - Create an Azure subscription
