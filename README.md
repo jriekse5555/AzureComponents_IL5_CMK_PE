@@ -34,7 +34,7 @@ aksClusterOutboundType - userDefinedRouting
 
 Note Azure Dedicated Hosts are not supported with AKS so IL5 compliance would require using VM sku sizes that take the entire host (or seeking an exception)
 
-The simplest way to test the system is to do the following:
+The simplest way to test the system starting with a keyvault deployment is to do the following:
 
 - Download this github repo as a .zip
 - Request a free Azure DevOps Services organization at https://dev.azure.com
