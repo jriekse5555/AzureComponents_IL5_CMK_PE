@@ -127,7 +127,10 @@
             "value": false
         },
         "managedOutboundIPCount": {
-            "value": 1
+            "value": 0
+        },
+        "aksClusterOutboundType": {
+            "value": "userDefinedRouting"
         }
     }
 }
