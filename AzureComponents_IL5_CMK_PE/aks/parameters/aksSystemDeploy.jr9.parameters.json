@@ -95,7 +95,6 @@
                     "osType": "Linux",
                     "maxCount": 3,
                     "minCount": 1,
-                    "enableEncryptionAtHost": true,
                     "enableAutoScaling": true,
                     "scaleSetPriority": "Regular",
                     "scaleSetEvictionPolicy": "Delete",
