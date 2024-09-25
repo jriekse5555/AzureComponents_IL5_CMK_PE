@@ -78,5 +78,9 @@ az deployment group create -n $deploymentName -g $deployRgp `
                 logAnalyticsResourceId=$logAnalyticsResourceId
 
 #Disable app ingress gateway for environments that don't support it which will prevent upgrading aks (without this)
-az aks disable-addons -n "$prj-$il-aks" -g $deployRgp -a ingress-appgw
+#az aks disable-addons -n "$prj-$il-aks" -g $deployRgp -a ingress-appgw
+
+#If interested in attaching the ACR to AKS for pulling images the following commands are needed:
+#$acrName = $prj+$il+"acr"
+#az aks update -n "$prj-$il-aks" -g $deployRgp --attach-acr $acrName
 
