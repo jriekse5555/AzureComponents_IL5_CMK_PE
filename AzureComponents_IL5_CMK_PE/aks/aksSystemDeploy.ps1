@@ -6,11 +6,11 @@
 #- Log onto Azure with Azure CLI
 #- Windows OS. Deployment not tested on linux, but could be easily adapted.
 
-
 #Azure Pre-reqs:
 #- Virtual networks
 #- Resource Groups
 #- Private DNS Zones for Storage Account File Shares/Blob, Keyvault, ACR, and AKS
+#- Resource Providers enabled for necessary components
 
 #What is Deployed:
 #- (Task 1) Keyvault with Private Endpoints, using CMKs
