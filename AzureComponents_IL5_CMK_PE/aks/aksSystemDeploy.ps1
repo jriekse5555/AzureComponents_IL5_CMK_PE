@@ -26,26 +26,26 @@
 
 #Configure the following parameters along with the AKS parameter file
 
-#Deployment IL ie. IL5 - enter impact level for naming
-$il='il5'
+#Deployment IL ie. IL5 - enter impact level or environment name for naming
+$il='<environment short name>'
 #Project name used as a prefix for naming objects
-$prj='jr9'
+$prj='<project short name>'
 #Azure deployment Resource Group where objects will be deployed
-$deployRgp='BuildingBlocks'
+$deployRgp='<rg>'
 #Path of the root of the repository
-$rootPath='C:\Users\jiriekse\Documents\git\AzureComponents_IL5_CMK_PE'
+$rootPath='<path to source directory>\AzureComponents_IL5_CMK_PE\AzureComponents_IL5_CMK_PE'
 #Existing Private Endpoint Subnet Name
-$privateLinkSubnetName='Subnet1'
+$privateLinkSubnetName='<subnet name>'
 #Existing Vnet Name
-$vnetName='BuildingBlocks'
+$vnetName='<vnet name>'
 #Existing Vnet Resource Group
-$vnetRgp='BuildingBlocks'
+$vnetRgp='<vnet rg>'
 #Existing Log Analytics Resource Id
-$logAnalyticsResourceId='/subscriptions/2658555b-efbe-4958-9088-475d8083bc0e/resourceGroups/BuildingBlocks/providers/Microsoft.OperationalInsights/workspaces/defaultlaworkspacejiriekse'
+$logAnalyticsResourceId='<resource id>'
 #Azure AD Group Object ID for Keyvault Access
-$kvtAadObjId='011101e7-60e7-4c4d-a4e0-03eacaaf9960'
+$kvtAadObjId='<object id>'
 #Existing Keyvault Private DNS Zone
-$kvtPrivateDNSZoneResourceId='/subscriptions/2658555b-efbe-4958-9088-475d8083bc0e/resourceGroups/buildingblocks/providers/Microsoft.Network/privateDnsZones/privatelink.vaultcore.azure.net'
+$kvtPrivateDNSZoneResourceId='<resource id>'
 
 $kvtName=$prj+$il+"kvt"
 az keyvault show -n $kvtName -g $deployRgp
@@ -67,7 +67,7 @@ $deploymentName = "aks-deploy-$((get-date).ToString('MMddyyyy-hhmmss'))"
 
 az deployment group create -n $deploymentName -g $deployRgp `
   --template-file "$rootPath/aks/aksSystemDeploy.bicep" `
-  --parameters "@$rootPath/aks/parameters/aksSystemDeploy.jr9.parameters.json" `
+  --parameters "@$rootPath/aks/parameters/aksSystemDeploy.example.parameters.json" `
                 prj=$prj `
                 il=$il `
                 vnetName=$vnetName `
@@ -76,4 +76,7 @@ az deployment group create -n $deploymentName -g $deployRgp `
                 kvtName=$kvtName `
                 priRgpName=$deployRgp `
                 logAnalyticsResourceId=$logAnalyticsResourceId
+
+#Disable app ingress gateway for environments that don't support it which will prevent upgrading aks (without this)
+az aks disable-addons -n "$prj-$il-aks" -g $deployRgp -a ingress-appgw
 
