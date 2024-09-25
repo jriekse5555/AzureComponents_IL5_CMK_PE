@@ -3,10 +3,10 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "dnsZoneRgpName": {
-            "value": "<rg name>"
+            "value": "BuildingBlocks"
         },
         "dnsZoneRgpSubId": {
-            "value": "<subid>"
+            "value": "2658555b-efbe-4958-9088-475d8083bc0e"
         },
         "cmkDESRoles": {
             "value": [
@@ -18,7 +18,6 @@
         },
         "fileShares": {
             "value": [
-                "<filesharename>"
             ]
         },
         "aksClusterNetworkPlugin": {
@@ -39,14 +38,16 @@
         "aksClusterSkuTier": {
             "value": "Paid"
         },
-
+        "aksClusterKubernetesVersion": {
+            "value": "1.29.8"
+        },
         "aadProfileAdminGroupObjectIDs": {
             "value": [
-                "<objectid>"
+                "011101e7-60e7-4c4d-a4e0-03eacaaf9960"
             ]
         },
         "aksPrivateDNSZoneId": {
-            "value": "<aksprivatednszoneresourceid>"
+            "value": "/subscriptions/2658555b-efbe-4958-9088-475d8083bc0e/resourceGroups/buildingblocks/providers/Microsoft.Network/privateDnsZones/privatelink.eastus.azmk8s.io"
         },
         "aadProfileManaged": {
             "value": true
@@ -74,7 +75,7 @@
                     "storageProfile": "ManagedDisks",
                     "type": "VirtualMachineScaleSets",
                     "mode": "System",
-                    "vnetSubnetID": "<subnetresourceid>",
+                    "vnetSubnetID": "/subscriptions/2658555b-efbe-4958-9088-475d8083bc0e/resourceGroups/BuildingBlocks/providers/Microsoft.Network/virtualNetworks/BuildingBlocks/subnets/akssubnet",
                     "maxPods": 30,
                     "availabilityZones": [
                     ],
@@ -111,7 +112,7 @@
                     "maxPods": 30,
                     "storageProfile": "ManagedDisks",
                     "mode": "User",
-                    "vnetSubnetID": "<subnetresourceid>"
+                    "vnetSubnetID": "/subscriptions/2658555b-efbe-4958-9088-475d8083bc0e/resourceGroups/BuildingBlocks/providers/Microsoft.Network/virtualNetworks/BuildingBlocks/subnets/akssubnet"
                 }
             ]
         },
