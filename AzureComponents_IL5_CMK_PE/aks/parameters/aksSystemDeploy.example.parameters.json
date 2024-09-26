@@ -70,7 +70,6 @@
                     "enableAutoScaling": true,
                     "minCount": 1,
                     "maxCount": 3,
-                    "enableEncryptionAtHost": false,
                     "vmSize": "standard_b2s",
                     "osType": "Linux",
                     "storageProfile": "ManagedDisks",
