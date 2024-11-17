@@ -1,19 +1,23 @@
-# /workspaces/AzureComponents_IL5_CMK_PE/AzureComponents_IL5_CMK_PE/aks/aksSystemDeploy.bicep
+# Regulated Industry Azure Kubernetes Service (AKS) Deployment
+
+## Description
+
+Create an Azure Kubernetes Service (AKS) that is a private cluster using a customer managed key, private endpoint, and private DNS zone for regulated industries
 
 ## Modules
 
 | Symbolic Name | Source | Description |
 | --- | --- | --- |
-| acr | ../../carmlBicepModules/Microsoft.ContainerRegistry/registries/deploy.bicep | Create ACR |
-| acrUmi | ../../carmlBicepModules/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep | Create user managed identity for ACR |
-| aks | ../../carmlBicepModules/Microsoft.ContainerService/managedClusters/deploy.bicep | Create AKS cluster |
-| aksUmi | ../../carmlBicepModules/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep | Create user managed identity for AKS |
-| assignAcrUmiToKvt | ../../carmlBicepModules/Microsoft.KeyVault/vaults/accessPolicies/deploy.bicep | Assign the acr umi with access to the cmk in the keyvault |
-| assignAksUmiAsReaderOnItsResourceGroup | ../../bicepModules/Identity/role.bicep | Assign the AKS UMI as a reader in its own resource group |
-| assignAksUmiToPrivateDnsZoneResourceGroup | ../../bicepModules/Identity/role.bicep | Assign the AKS UMI as a privateDnsZoneContributor on the Private DNS Zone Resource Group |
-| assignNetworkContributor | ../../bicepModules/Identity/role.bicep | Assign the AKS UMI as a Network Contributor on the Resource Group that owns the Virtual Network |
+| acr | ../../carmlBicepModules/Microsoft.ContainerRegistry/registries/deploy.bicep | Create the Azure Container Registry using the previously created resources. This will create the Azure Container Registry (ACR) with a key vault reference and use the private dns zone scope to create a new "A" Record in the zone for this container registry. |
+| acrUmi | ../../carmlBicepModules/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep | Create user managed identity for the Azure Container Registry (ACR) to authenticate against the Azure Key Vault to retrieve the customer managed key. |
+| aks | ../../carmlBicepModules/Microsoft.ContainerService/managedClusters/deploy.bicep | Create the Azure Kubernetes Service Private Cluster on the targeted virtual network |
+| aksUmi | ../../carmlBicepModules/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep | Create user managed identity for the Azure Kubernetes Service (AKS) to authenticate against the Azure Key Vault to retrieve the customer managed key. |
+| assignAcrUmiToKvt | ../../carmlBicepModules/Microsoft.KeyVault/vaults/accessPolicies/deploy.bicep | Assign the Azure Container Registry (ACR) User Managed Identity (UMI) with the required key vault access policy to pull the Azure Key Vault (AKV) hosted encryption key. |
+| assignAksUmiAsReaderOnItsResourceGroup | ../../bicepModules/Identity/role.bicep | Assign the Azure Kubernetes Service (AKS) User Managed Identity (UMI) as a reader in its own resource group |
+| assignAksUmiToPrivateDnsZoneResourceGroup | ../../bicepModules/Identity/role.bicep | Assign the Azure Kubernetes Service (AKS) User Managed Identity (UMI) as a privateDnsZoneContributor on the Private DNS Zone Resource Group |
+| assignNetworkContributor | ../../bicepModules/Identity/role.bicep | Assign the Azure Kubernetes Service (AKS) User Managed Identity (UMI) as a Network Contributor on the Resource Group that owns the Virtual Network |
 | assignStgUmiToKvt | ../../carmlBicepModules/Microsoft.KeyVault/vaults/accessPolicies/deploy.bicep | Assign the stg umi with access to the cmk in the keyvault |
-| cmkKey | ../../carmlBicepModules/Microsoft.KeyVault/vaults/keys/deploy.bicep | Create customer managed keys for each array member |
+| cmkKey | ../../carmlBicepModules/Microsoft.KeyVault/vaults/keys/deploy.bicep | Create customer managed keys for the Azure Container Registry (ACR) that will be used to encrypt the data at rest. To meet Impact Level 5 requirements we will assign a key size of 4096 bits and use the RSA-HSM key type. |
 | des | ../../carmlBicepModules/Microsoft.Compute/diskEncryptionSets/deploy.bicep | Creates disk encryption sets associated with customer managed keys for each array member |
 | stg | ../../carmlBicepModules/Microsoft.Storage/storageAccounts/deploy.bicep | Create storage account |
 | stgShares | ../../carmlBicepModules/Microsoft.Storage/storageAccounts/fileServices/shares/deploy.bicep | Create shares |
@@ -67,9 +71,9 @@
 
 | Symbolic Name | Type | Description |
 | --- | --- | --- |
-| acrPrivateDNSZone | [Microsoft.Network/privateDnsZones](https://learn.microsoft.com/en-us/azure/templates/microsoft.network/privatednszones) | Calculate acr Private DNS Zone resource id |
-| keyvaultRef | [Microsoft.KeyVault/vaults](https://learn.microsoft.com/en-us/azure/templates/microsoft.keyvault/vaults) | Keyvault reference |
-| privateLinkSubnet | [Microsoft.Network/virtualNetworks/subnets](https://learn.microsoft.com/en-us/azure/templates/microsoft.network/virtualnetworks/subnets) | Calculate private link subnet resource id |
+| acrPrivateDNSZone | [Microsoft.Network/privateDnsZones](https://learn.microsoft.com/en-us/azure/templates/microsoft.network/privatednszones) | Generate an Azure Resource Manager (ARM) reference to the Azure Container Registry (ACR) Private DNS Zone that will be used to resolve the ACR private endpoint. |
+| keyvaultRef | [Microsoft.KeyVault/vaults](https://learn.microsoft.com/en-us/azure/templates/microsoft.keyvault/vaults) | Generate an Azure Resource Manager (ARM) reference to the Azure Key Vault (AKV)  that will be used to create the customer managed key (CMK) for the Azure Kubernetes Service (AKS). |
+| privateLinkSubnet | [Microsoft.Network/virtualNetworks/subnets](https://learn.microsoft.com/en-us/azure/templates/microsoft.network/virtualnetworks/subnets) | Generate an Azure Resource Manager (ARM) reference to the Azure Subnet that will be used to map the Azure Kubernetes Service (AKS) private interface to the appropriate subnet. |
 | stgBlobPrivateDNSZone | [Microsoft.Network/privateDnsZones](https://learn.microsoft.com/en-us/azure/templates/microsoft.network/privatednszones) | Calculate storage account blob Private DNS Zone resource id |
 | stgFilePrivateDNSZone | [Microsoft.Network/privateDnsZones](https://learn.microsoft.com/en-us/azure/templates/microsoft.network/privatednszones) | Calculate storage account file Private DNS Zone resource id |
 
@@ -80,4 +84,4 @@
 | networkAcls | Optional. Public endpoint firewall. |
 | networkContributorGuid |  |
 | privateDnsZoneContributorGuid |  |
-| readerGuid |  |
+| readerGuid | The default role assignment guid for Reader |
