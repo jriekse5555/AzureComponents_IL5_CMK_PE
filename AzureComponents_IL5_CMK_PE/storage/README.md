@@ -1,41 +1,5 @@
 # /workspaces/AzureComponents_IL5_CMK_PE/AzureComponents_IL5_CMK_PE/storage/stgDeployCarml.bicep
 
-## Usage
-
-Here is a basic example of how to use this Bicep module:
-
-```bicep
-module reference_name 'path_to_module | container_registry_reference' = {
-  name: 'deployment_name'
-  params: {
-    // Required parameters
-    dnsZoneRgpName:
-    dnsZoneRgpSubId:
-    kvtName:
-    kvtRgpName:
-    kvtRgpSubId:
-    logAnalyticsResourceId:
-    privateLinkSubnetName:
-    stgName:
-    stgRgpName:
-    vnetName:
-    vnetRgp:
-
-    // Optional parameters
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-      ipRules: []
-      virtualNetworkRules: []
-    }
-    storageAccountKind: 'StorageV2'
-    storageAccountSku: 'Standard_LRS'
-  }
-}
-```
-
-> Note: In the default values, strings enclosed in square brackets (e.g. '[resourceGroup().location]' or '[__bicep.function_name(args...)']) represent function calls or references.
-
 ## Modules
 
 | Symbolic Name | Source | Description |
@@ -44,15 +8,6 @@ module reference_name 'path_to_module | container_registry_reference' = {
 | cmkKey | ../../carmlBicepModules/Microsoft.KeyVault/vaults/keys/deploy.bicep | Create customer managed keys for storage account |
 | stg | ../../carmlBicepModules/Microsoft.Storage/storageAccounts/deploy.bicep | Create storage account |
 | stgUmi | ../../carmlBicepModules/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep | Create user managed identity for storage account |
-
-## Resources
-
-| Symbolic Name | Type | Description |
-| --- | --- | --- |
-| keyvaultRef | [Microsoft.KeyVault/vaults](https://learn.microsoft.com/en-us/azure/templates/microsoft.keyvault/vaults) | Keyvault reference |
-| privateLinkSubnet | [Microsoft.Network/virtualNetworks/subnets](https://learn.microsoft.com/en-us/azure/templates/microsoft.network/virtualnetworks/subnets) | Calculate private link subnet resource id |
-| stgBlobPrivateDNSZone | [Microsoft.Network/privateDnsZones](https://learn.microsoft.com/en-us/azure/templates/microsoft.network/privatednszones) | Calculate storage account blob Private DNS Zone resource id |
-| stgFilePrivateDNSZone | [Microsoft.Network/privateDnsZones](https://learn.microsoft.com/en-us/azure/templates/microsoft.network/privatednszones) | Calculate storage account file Private DNS Zone resource id |
 
 ## Parameters
 
@@ -72,3 +27,12 @@ module reference_name 'path_to_module | container_registry_reference' = {
 | storageAccountSku | string | Optional. Specifies the storage account SKU. | "Standard_LRS" |
 | vnetName | string | Required. Virtual Network Name. |  |
 | vnetRgp | string | Required. Virtual Network Resource Group. |  |
+
+## Resources
+
+| Symbolic Name | Type | Description |
+| --- | --- | --- |
+| keyvaultRef | [Microsoft.KeyVault/vaults](https://learn.microsoft.com/en-us/azure/templates/microsoft.keyvault/vaults) | Keyvault reference |
+| privateLinkSubnet | [Microsoft.Network/virtualNetworks/subnets](https://learn.microsoft.com/en-us/azure/templates/microsoft.network/virtualnetworks/subnets) | Calculate private link subnet resource id |
+| stgBlobPrivateDNSZone | [Microsoft.Network/privateDnsZones](https://learn.microsoft.com/en-us/azure/templates/microsoft.network/privatednszones) | Calculate storage account blob Private DNS Zone resource id |
+| stgFilePrivateDNSZone | [Microsoft.Network/privateDnsZones](https://learn.microsoft.com/en-us/azure/templates/microsoft.network/privatednszones) | Calculate storage account file Private DNS Zone resource id |

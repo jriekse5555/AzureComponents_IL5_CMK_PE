@@ -1,3 +1,6 @@
+metadata name = 'Regulated Industry Azure Container Registry (ACR) Deployment'
+metadata description = 'Create an Azure Container Registry (ACR) using a customer managed key, private endpoint, and private DNS zone for regulated industries'
+
 @description('Required. Virtual Network Name.')
 param vnetName string
 
@@ -33,19 +36,19 @@ param kvtRgpSubId string
 
 
 
-@description('Keyvault reference')
+@description('Generate an Azure Resource Manager (ARM) reference to the Azure Key Vault (AKV)  that will be used to create the customer managed key (CMK) for the Azure Container Registry (ACR).')
 resource keyvaultRef 'Microsoft.KeyVault/vaults@2019-09-01' existing = {
   name: kvtName
   scope: resourceGroup(kvtRgpSubId,kvtRgpName)
 }
 
-@description('Calculate private link subnet resource id')
+@description('Generate an Azure Resource Manager (ARM) reference to the Azure Subnet that will be used to map the Azure Container Registry (ACR) private interface to the appropriate subnet.')
 resource privateLinkSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-05-01' existing = {
   name: '${vnetName}/${privateLinkSubnetName}'
   scope: resourceGroup(vnetRgp)
 }
 
-@description('Create user managed identity for ACR')
+@description('Create user managed identity for the Azure Container Registry (ACR) to authenticate against the Azure Key Vault to retrieve the customer managed key.')
 module acrUmi '../../carmlBicepModules/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
   name: 'acrUmi-${uniqueString(deployment().name)}'
   scope: resourceGroup(acrRgpName)
@@ -54,19 +57,19 @@ module acrUmi '../../carmlBicepModules/Microsoft.ManagedIdentity/userAssignedIde
   }
 }
 
-@description('Create customer managed keys for ACR')
+@description('Create customer managed keys for the Azure Container Registry (ACR) that will be used to encrypt the data at rest. To meet Impact Level 5 requirements we will assign a key size of 4096 bits and use the RSA-HSM key type.')
 module cmkKey '../../carmlBicepModules/Microsoft.KeyVault/vaults/keys/deploy.bicep' = {
   name: 'cmkkey-${uniqueString(deployment().name)}'
   scope: resourceGroup(kvtRgpSubId,kvtRgpName)
   params: {
     name: toUpper('${acrName}-CMK-01')
     keyVaultName: keyvaultRef.name
-    keySize: 2048
+    keySize: 4096
     kty: 'RSA-HSM'
   }
 }
 
-@description('Assign the acr umi with access to the cmk in the keyvault')
+@description('Assign the Azure Container Registry (ACR) User Managed Identity (UMI) with the required key vault access policy to pull the Azure Key Vault (AKV) hosted encryption key.')
 module assignAcrUmiToKvt '../../carmlBicepModules/Microsoft.KeyVault/vaults/accessPolicies/deploy.bicep' = {
   name: 'assignAcrUmiToKvt-${uniqueString(deployment().name)}'
   scope: resourceGroup(kvtRgpSubId,kvtRgpName)
@@ -90,13 +93,13 @@ module assignAcrUmiToKvt '../../carmlBicepModules/Microsoft.KeyVault/vaults/acce
   }
 }
 
-@description('Calculate acr Private DNS Zone resource id')
+@description('Generate an Azure Resource Manager (ARM) reference to the Azure Container Registry (ACR) Private DNS Zone that will be used to resolve the ACR private endpoint.')
 resource acrPrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   scope: resourceGroup(dnsZoneRgpSubId,dnsZoneRgpName)
   name: 'privatelink${environment().suffixes.acrLoginServer}'
 }
 
-@description('Create ACR')
+@description('Create the Azure Container Registry using the previously created resources. This will create the Azure Container Registry (ACR) with a key vault reference and use the private dns zone scope to create a new "A" Record in the zone for this container registry.')
 module acr '../../carmlBicepModules/Microsoft.ContainerRegistry/registries/deploy.bicep' = {
   name: 'acr-${uniqueString(deployment().name)}'
   scope: resourceGroup(acrRgpName)

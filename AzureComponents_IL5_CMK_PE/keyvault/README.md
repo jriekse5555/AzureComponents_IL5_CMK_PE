@@ -1,49 +1,10 @@
 # /workspaces/AzureComponents_IL5_CMK_PE/AzureComponents_IL5_CMK_PE/keyvault/kvtDeployCarml.bicep
 
-## Usage
-
-Here is a basic example of how to use this Bicep module:
-
-```bicep
-module reference_name 'path_to_module | container_registry_reference' = {
-  name: 'deployment_name'
-  params: {
-    // Required parameters
-    kvtAadObjId:
-    kvtName:
-    kvtPrivateDNSZoneResourceId:
-    kvtRgpName:
-    logAnalyticsResourceId:
-    privateLinkSubnetName:
-    vnetName:
-    vnetRgp:
-
-    // Optional parameters
-    enablePurgeProtection: true
-    location: '[resourceGroup().location]'
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-      ipRules: []
-      virtualNetworkRules: []
-    }
-  }
-}
-```
-
-> Note: In the default values, strings enclosed in square brackets (e.g. '[resourceGroup().location]' or '[__bicep.function_name(args...)']) represent function calls or references.
-
 ## Modules
 
 | Symbolic Name | Source | Description |
 | --- | --- | --- |
 | keyvault | ../../carmlBicepModules/Microsoft.KeyVault/vaults/deploy.bicep | Creates keyvault |
-
-## Resources
-
-| Symbolic Name | Type | Description |
-| --- | --- | --- |
-| privateLinkSubnet | [Microsoft.Network/virtualNetworks/subnets](https://learn.microsoft.com/en-us/azure/templates/microsoft.network/virtualnetworks/subnets) | Calculate private link subnet resource id |
 
 ## Parameters
 
@@ -60,6 +21,12 @@ module reference_name 'path_to_module | container_registry_reference' = {
 | privateLinkSubnetName | string | Required. Private Link Subnet Name. |  |
 | vnetName | string | Optional. Virtual Network Name. |  |
 | vnetRgp | string | Optional. Virtual Network Resource Group. |  |
+
+## Resources
+
+| Symbolic Name | Type | Description |
+| --- | --- | --- |
+| privateLinkSubnet | [Microsoft.Network/virtualNetworks/subnets](https://learn.microsoft.com/en-us/azure/templates/microsoft.network/virtualnetworks/subnets) | Calculate private link subnet resource id |
 
 ## Variables
 
