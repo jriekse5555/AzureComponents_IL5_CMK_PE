@@ -1,3 +1,7 @@
+metadata name = 'Regulated Industry Azure Storage (STG) Deployment'
+metadata description = 'Create an Azure Storage (STG) that is a private storage account deployed into a virtual network and is integrated to a Log Analytics workspace for diagnostics.'
+
+
 @description('Required. Virtual Network Name.')
 param vnetName string
 

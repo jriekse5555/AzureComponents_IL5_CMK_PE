@@ -1,4 +1,8 @@
-# /workspaces/AzureComponents_IL5_CMK_PE/AzureComponents_IL5_CMK_PE/keyvault/kvtDeployCarml.bicep
+# Regulated Industry Azure Key Vault (AKV) Deployment
+
+## Description
+
+Create an Azure Key Vault (AKV) that is a private vault deployed into a virtual network and is integrated to a Log Analytics workspace for diagnostics.
 
 ## Modules
 

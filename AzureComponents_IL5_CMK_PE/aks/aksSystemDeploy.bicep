@@ -151,8 +151,10 @@ var networkAcls = {
 
 @description('The default role assignment guid for privateDnsZoneContributor')
 var privateDnsZoneContributorGuid = 'b12aa53e-6015-4669-85d0-8515ebb3ae7f'
+
 @description('The default role assignment guid for Network Contributor')
 var networkContributorGuid = '4d97b98b-1d4f-4787-a291-c67834d212e7'
+
 @description('The default role assignment guid for Reader')
 var readerGuid = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 

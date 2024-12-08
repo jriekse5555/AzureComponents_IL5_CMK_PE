@@ -36,3 +36,31 @@ Create an Azure Container Registry (ACR) using a customer managed key, private e
 | acrPrivateDNSZone | [Microsoft.Network/privateDnsZones](https://learn.microsoft.com/en-us/azure/templates/microsoft.network/privatednszones) | Generate an Azure Resource Manager (ARM) reference to the Azure Container Registry (ACR) Private DNS Zone that will be used to resolve the ACR private endpoint. |
 | keyvaultRef | [Microsoft.KeyVault/vaults](https://learn.microsoft.com/en-us/azure/templates/microsoft.keyvault/vaults) | Generate an Azure Resource Manager (ARM) reference to the Azure Key Vault (AKV)  that will be used to create the customer managed key (CMK) for the Azure Container Registry (ACR). |
 | privateLinkSubnet | [Microsoft.Network/virtualNetworks/subnets](https://learn.microsoft.com/en-us/azure/templates/microsoft.network/virtualnetworks/subnets) | Generate an Azure Resource Manager (ARM) reference to the Azure Subnet that will be used to map the Azure Container Registry (ACR) private interface to the appropriate subnet. |
+
+## Usage
+
+Here is a basic example of how to use this Bicep module:
+
+```bicep
+module reference_name 'path_to_module | container_registry_reference' = {
+  name: 'deployment_name'
+  params: {
+    // Required parameters
+    acrName:
+    acrRgpName:
+    dnsZoneRgpName:
+    dnsZoneRgpSubId:
+    kvtName:
+    kvtRgpName:
+    kvtRgpSubId:
+    logAnalyticsResourceId:
+    privateLinkSubnetName:
+    vnetName:
+    vnetRgp:
+
+    // Optional parameters
+  }
+}
+```
+
+> Note: In the default values, strings enclosed in square brackets (e.g. '[resourceGroup().location]' or '[__bicep.function_name(args...)']) represent function calls or references.

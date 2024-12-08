@@ -85,3 +85,61 @@ Create an Azure Kubernetes Service (AKS) that is a private cluster using a custo
 | networkContributorGuid |  |
 | privateDnsZoneContributorGuid |  |
 | readerGuid | The default role assignment guid for Reader |
+
+## Usage
+
+Here is a basic example of how to use this Bicep module:
+
+```bicep
+module reference_name 'path_to_module | container_registry_reference' = {
+  name: 'deployment_name'
+  params: {
+    // Required parameters
+    aadProfileAdminGroupObjectIDs:
+    aksPrivateDNSZoneId:
+    dnsZoneRgpName:
+    dnsZoneRgpSubId:
+    kvtName:
+    logAnalyticsResourceId:
+    priRgpName:
+    primaryAgentPoolProfile:
+    privateLinkSubnetName:
+    vnetName:
+    vnetRgp:
+
+    // Optional parameters
+    aadProfileEnableAzureRBAC: true
+    aadProfileManaged: true
+    acrName: '[toLower(format('{0}{1}acr' parameters('prj') parameters('il')))]'
+    agentPools: []
+    aksClusterDnsServiceIP: '10.100.0.10'
+    aksClusterDockerBridgeCidr: '172.17.0.1/16'
+    aksClusterKubernetesVersion: '1.22.4'
+    aksClusterName: '[toLower(format('{0}-{1}-AKS' parameters('prj') parameters('il')))]'
+    aksClusterNetworkPlugin: 'azure'
+    aksClusterNetworkPolicy: 'azure'
+    aksClusterServiceCidr: '10.100.0.0/16'
+    aksClusterSkuTier: 'Paid'
+    aksCmkDESRolesArrayID: 0
+    cmkDESRoles: [
+      'aks'
+    ]
+    disableLocalAccounts: true
+    enableAzureDefender: false
+    enableKeyvaultSecretsProvider: true
+    enablePrivateCluster: true
+    enableSecretRotation: 'true'
+    fileShares: []
+    il: 'il5'
+    location: '[resourceGroup().location]'
+    managedOutboundIPCount: 1
+    nodeResourceGroup: 'AKS-NODE-01'
+    prj: 'tst'
+    stgName: '[toLower(format('{0}{1}stg' parameters('prj') parameters('il')))]'
+    storageAccountKind: 'StorageV2'
+    storageAccountSku: 'Standard_LRS'
+  }
+}
+```
+
+> Note: In the default values, strings enclosed in square brackets (e.g. '[resourceGroup().location]' or '[__bicep.function_name(args...)']) represent function calls or references.

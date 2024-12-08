@@ -1,4 +1,8 @@
-# /workspaces/AzureComponents_IL5_CMK_PE/AzureComponents_IL5_CMK_PE/storage/stgDeployCarml.bicep
+# Regulated Industry Azure Storage (STG) Deployment
+
+## Description
+
+Create an Azure Storage (STG) that is a private storage account deployed into a virtual network and is integrated to a Log Analytics workspace for diagnostics.
 
 ## Modules
 
