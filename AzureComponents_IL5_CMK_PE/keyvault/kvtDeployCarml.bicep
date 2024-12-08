@@ -1,3 +1,6 @@
+metadata name = 'Regulated Industry Azure Key Vault (AKV) Deployment'
+metadata description = 'Create an Azure Key Vault (AKV) that is a private vault deployed into a virtual network and is integrated to a Log Analytics workspace for diagnostics.'
+
 @description('Optional. Location for the resources to be deployed to.')
 param location string = resourceGroup().location
 

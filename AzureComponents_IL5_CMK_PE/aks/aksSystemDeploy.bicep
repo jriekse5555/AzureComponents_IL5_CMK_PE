@@ -14,6 +14,9 @@ What is Deployed:
 - Aks Private Cluster using Disk Encryption Set with Configurable Node Pools
 */
 
+metadata name = 'Regulated Industry Azure Kubernetes Service (AKS) Deployment'
+metadata description = 'Create an Azure Kubernetes Service (AKS) that is a private cluster using a customer managed key, private endpoint, and private DNS zone for regulated industries'
+
 @description('Optional. Project name for naming')
 param prj string = 'tst'
 
@@ -146,30 +149,35 @@ var networkAcls = {
   virtualNetworkRules: []
 }
 
+@description('The default role assignment guid for privateDnsZoneContributor')
 var privateDnsZoneContributorGuid = 'b12aa53e-6015-4669-85d0-8515ebb3ae7f'
+
+@description('The default role assignment guid for Network Contributor')
 var networkContributorGuid = '4d97b98b-1d4f-4787-a291-c67834d212e7'
+
+@description('The default role assignment guid for Reader')
 var readerGuid = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 
-@description('Calculate private link subnet resource id')
+@description('Generate an Azure Resource Manager (ARM) reference to the Azure Subnet that will be used to map the Azure Kubernetes Service (AKS) private interface to the appropriate subnet.')
 resource privateLinkSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-05-01' existing = {
   name: '${vnetName}/${privateLinkSubnetName}'
   scope: resourceGroup(vnetRgp)
 }
 
-@description('Keyvault reference')
+@description('Generate an Azure Resource Manager (ARM) reference to the Azure Key Vault (AKV)  that will be used to create the customer managed key (CMK) for the Azure Kubernetes Service (AKS).')
 resource keyvaultRef 'Microsoft.KeyVault/vaults@2019-09-01' existing = {
   name: kvtName
   scope: resourceGroup(priRgpName)
 }
 
-@description('Create customer managed keys for each array member')
+@description('Create customer managed keys for the Azure Container Registry (ACR) that will be used to encrypt the data at rest. To meet Impact Level 5 requirements we will assign a key size of 4096 bits and use the RSA-HSM key type.')
 module cmkKey '../../carmlBicepModules/Microsoft.KeyVault/vaults/keys/deploy.bicep' = [for role in cmkDESRoles: {
   name: 'cmkkey-${role}-${uniqueString(deployment().name)}'
   scope: resourceGroup(priRgpName)
   params: {
     name: toLower('${prj}-${il}-${role}-CMK')
     keyVaultName: keyvaultRef.name
-    keySize: 2048
+    keySize: 4096
     kty: 'RSA-HSM'
   }
 }]
@@ -186,7 +194,7 @@ module des '../../carmlBicepModules/Microsoft.Compute/diskEncryptionSets/deploy.
   }
 }]
 
-@description('Create user managed identity for AKS')
+@description('Create user managed identity for the Azure Kubernetes Service (AKS) to authenticate against the Azure Key Vault to retrieve the customer managed key.')
 module aksUmi '../../carmlBicepModules/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
   name: 'aksumi-${uniqueString(deployment().name)}'
   scope: resourceGroup(priRgpName)
@@ -195,7 +203,7 @@ module aksUmi '../../carmlBicepModules/Microsoft.ManagedIdentity/userAssignedIde
   }
 }
 
-@description('Assign the AKS UMI as a privateDnsZoneContributor on the Private DNS Zone Resource Group')
+@description('Assign the Azure Kubernetes Service (AKS) User Managed Identity (UMI) as a privateDnsZoneContributor on the Private DNS Zone Resource Group')
 module assignAksUmiToPrivateDnsZoneResourceGroup '../../bicepModules/Identity/role.bicep' = {
   name: 'assign-umi-to-dnsZone-${uniqueString(deployment().name)}'
   scope: resourceGroup(dnsZoneRgpSubId,dnsZoneRgpName)
@@ -206,7 +214,7 @@ module assignAksUmiToPrivateDnsZoneResourceGroup '../../bicepModules/Identity/ro
   }
 }
 
-@description('Assign the AKS UMI as a Network Contributor on the Resource Group that owns the Virtual Network')
+@description('Assign the Azure Kubernetes Service (AKS) User Managed Identity (UMI) as a Network Contributor on the Resource Group that owns the Virtual Network')
 module assignNetworkContributor '../../bicepModules/Identity/role.bicep' = {
   name: 'assign-umi-to-vnetrgp-${uniqueString(deployment().name)}'
   scope: resourceGroup(vnetRgp)
@@ -217,7 +225,7 @@ module assignNetworkContributor '../../bicepModules/Identity/role.bicep' = {
   }
 }
 
-@description('Assign the AKS UMI as a reader in its own resource group')
+@description('Assign the Azure Kubernetes Service (AKS) User Managed Identity (UMI) as a reader in its own resource group')
 module assignAksUmiAsReaderOnItsResourceGroup '../../bicepModules/Identity/role.bicep' = {
   name: 'assign-umi-to-aksRgp-${uniqueString(deployment().name)}'
   scope: resourceGroup(priRgpName)
@@ -228,7 +236,7 @@ module assignAksUmiAsReaderOnItsResourceGroup '../../bicepModules/Identity/role.
   }
 }
 
-@description('Create AKS cluster')
+@description('Create the Azure Kubernetes Service Private Cluster on the targeted virtual network')
 module aks '../../carmlBicepModules/Microsoft.ContainerService/managedClusters/deploy.bicep' = {
   name: 'aks-${uniqueString(deployment().name)}'
   scope: resourceGroup(priRgpName)
@@ -263,7 +271,7 @@ module aks '../../carmlBicepModules/Microsoft.ContainerService/managedClusters/d
   }
 }
 
-@description('Create user managed identity for ACR')
+@description('Create user managed identity for the Azure Container Registry (ACR) to authenticate against the Azure Key Vault to retrieve the customer managed key.')
 module acrUmi '../../carmlBicepModules/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
   name: 'acrUmi-${uniqueString(deployment().name)}'
   scope: resourceGroup(priRgpName)
@@ -272,7 +280,7 @@ module acrUmi '../../carmlBicepModules/Microsoft.ManagedIdentity/userAssignedIde
   }
 }
 
-@description('Assign the acr umi with access to the cmk in the keyvault')
+@description('Assign the Azure Container Registry (ACR) User Managed Identity (UMI) with the required key vault access policy to pull the Azure Key Vault (AKV) hosted encryption key.')
 module assignAcrUmiToKvt '../../carmlBicepModules/Microsoft.KeyVault/vaults/accessPolicies/deploy.bicep' = {
   name: 'assignAcrUmiToKvt-${uniqueString(deployment().name)}'
   scope: resourceGroup(priRgpName)
@@ -296,13 +304,13 @@ module assignAcrUmiToKvt '../../carmlBicepModules/Microsoft.KeyVault/vaults/acce
   }
 }
 
-@description('Calculate acr Private DNS Zone resource id')
+@description('Generate an Azure Resource Manager (ARM) reference to the Azure Container Registry (ACR) Private DNS Zone that will be used to resolve the ACR private endpoint.')
 resource acrPrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   scope: resourceGroup(dnsZoneRgpSubId,dnsZoneRgpName)
   name: 'privatelink${environment().suffixes.acrLoginServer}'
 }
 
-@description('Create ACR')
+@description('Create the Azure Container Registry using the previously created resources. This will create the Azure Container Registry (ACR) with a key vault reference and use the private dns zone scope to create a new "A" Record in the zone for this container registry.')
 module acr '../../carmlBicepModules/Microsoft.ContainerRegistry/registries/deploy.bicep' = {
   name: 'acr-${uniqueString(deployment().name)}'
   scope: resourceGroup(priRgpName)
