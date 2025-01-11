@@ -1,4 +1,4 @@
-# AzureComponents_IL5_CMK_PE
+# AzureComponents_IL5_CMK_PE - For use with Azure DevOps Services/Server Pipelines
 
 Based on Bicep CARML modules which are hosted on the following github repo: https://github.com/Azure/ResourceModules
 
