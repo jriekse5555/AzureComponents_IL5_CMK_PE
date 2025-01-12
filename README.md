@@ -7,7 +7,7 @@ This repo provides fast deployment of the following components with Azure config
 - Keyvault
 - Storage Account
 - Azure Container Registry (ACR)
-- AKS (with Keyvault, Storage Account and ACR)
+- AKS (with Keyvault, Storage Account and ACR) - (There is now a Powershell initiated script and readme within the AKS folder)
 
 For a quick reference on IL5 see: https://docs.microsoft.com/en-us/compliance/regulatory/offering-dod-il5
 
