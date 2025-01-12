@@ -59,3 +59,31 @@ The simplest way to test the system starting with a keyvault deployment is to do
 - You may want to delete deployed objects as they can add up in cost
 
 Note that the Azure DevOps Server Pipelines that are published rely on the AZ Cli ADO task. This task calls az commands using a cmd /c command and passes the required parameters including the service principal password. If you are using Windows self-hosted build agents and the Windows advanced auditing setting 'Audit Process Creation' this will capture the process creation command line and save the service principal password in the audit logs. Consider certificate based service principal authentication or avoiding this audit setting for Windows build agents. 
+
+Below are more details around configuration of the AKS parameter .json file and its parameters:
+
+- dnsZoneRgpName - The resource group that all the private dns zones exist in. This is necessary including the aks private dns zone.
+- dnsZoneRgpSubId - The subscription ID of the DNS Zone resource group above
+- cmkDESRoles - This is a list of Disk Encryption sets to create. The default value is fine.
+- storageAccountSku - The sku of the storage account. LRS is default as ZRS is not available yet in all environments.
+- fileShares - This variable allows additional file shares to be created on the storage account. An empty array is fine.
+- aksClusterNetworkPlugin - Default value is fine. Determines AKS network mode.
+- aksClusterNetworkPolicy - Default value is fine. Determines AKS network mode.
+- aksClusterServiceCidr - Default value is fine. This is for internal routing. Can be left as is even if your private IP scheme is different.
+- aksClusterDnsServiceIP - Default value is fine. This is for internal routing. Can be left as is even if your private IP scheme is different.
+- aksClusterSkuTier - Determines whether in paid support mode or not. Default is fine.
+- aksClusterKubernetesVersion - AKS version. This value changes frequently and will generate an error if does not meet minimum version. May need to be changed to available versions.
+- aadProfileAdminGroupObjectIDs - The Entra ID (Azure AD) user or group object ID that will have full admin rights on AKS. Should be configured to ensure this is avialable.
+- aksPrivateDNSZoneId - The AKS private DNS zone is a prereq. This is the Azure resource id of the object. It must be in the same resource group as other needed private dns zones. Check your documentation for the exact name. For example, Azure Government is: privatelink.<region>.cx.aks.containerservice.azure.us
+- aadProfileManaged - Default is fine. Indicates using AAD groups.
+- aadProfileEnableAzureRBAC - Default is fine. Indicates using AAD groups.
+- disableLocalAccounts - Default is fine. Adds security by disabling local AKS accounts 
+- enablePrivateCluster - Default is fine. A private AKS cluster is what we want to be secure.
+- primaryAgentPoolProfile - Defines required system node pool. Subnet resource id is required which is a combiniation of virtual network resource id with the suffix of 'subnets/<name of subnet>'. Subnet resource id is not easily found in the Azure portal
+- agentPools - This variable is optional. You will most like want a user node pool for your workloads. Subnet id is required. enableEncryptionAtHost may not be available in the target environment.
+- enableKeyvaultSecretsProvider - Default is fine. May be useful to be leveraged in later workload development
+- enableSecretRotation - Default is fine. Good security practice.
+- enableAzureDefender - Default is fine. This security feature is best set to this value.
+- managedOutboundIPCount - Set this to 0 in environments that have an Azure Firewall or other method for egress traffic. The Azure Firewall will need to allow all the URLs to allow access to the Ubuntu images needed to build the node pool hosts. If your AKS deployment is stopping at agent pool deployment check the virtual machine scale set activity logs to see if there are errors around blocked URLs. In test environments this can be set to 1 to allow a pip for egress.
+- aksClusterOutboundType - Works in parallel with the variable above managedOutboundIPCount. The default value of UserDefinedRouting indicates use of an Azure Firewall. The other value is LoadBalancer which will create a load balancer with a pip for egress (not for prod).
+
