@@ -216,9 +216,11 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
         } : null
         table: {
           enabled: true
+          keyType: 'Account'
         }
         queue: {
           enabled: true
+          keyType: 'Account'
         }
       }
       requireInfrastructureEncryption: storageAccountKind != 'Storage' ? requireInfrastructureEncryption : null
