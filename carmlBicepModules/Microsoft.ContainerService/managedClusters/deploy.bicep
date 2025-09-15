@@ -378,13 +378,13 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (ena
   }
 }
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-03-01' = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-10-01' = {
   name: name
   location: location
   tags: tags
   identity: identity
   sku: {
-    name: 'Basic'
+    name: 'Base'
     tier: aksClusterSkuTier
   }
   properties: {
@@ -441,10 +441,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-03-01' 
     networkProfile: {
       networkPlugin: !empty(aksClusterNetworkPlugin) ? any(aksClusterNetworkPlugin) : null
       networkPolicy: !empty(aksClusterNetworkPolicy) ? any(aksClusterNetworkPolicy) : null
+      networkPluginMode: 'overlay'
       podCidr: !empty(aksClusterPodCidr) ? aksClusterPodCidr : null
       serviceCidr: !empty(aksClusterServiceCidr) ? aksClusterServiceCidr : null
       dnsServiceIP: !empty(aksClusterDnsServiceIP) ? aksClusterDnsServiceIP : null
-      dockerBridgeCidr: !empty(aksClusterDockerBridgeCidr) ? aksClusterDockerBridgeCidr : null
+      //dockerBridgeCidr: !empty(aksClusterDockerBridgeCidr) ? aksClusterDockerBridgeCidr : null
       outboundType: aksClusterOutboundType
       loadBalancerSku: aksClusterLoadBalancerSku
       loadBalancerProfile: managedOutboundIPCount != 0 ? lbProfile : null
@@ -493,10 +494,10 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-03-01' 
       userAssignedIdentityExceptions: podIdentityProfileUserAssignedIdentityExceptions
     }
     securityProfile: enableAzureDefender ? {
-      azureDefender: {
-        enabled: enableAzureDefender
-        logAnalyticsWorkspaceResourceId: !empty(monitoringWorkspaceId) ? monitoringWorkspaceId : null
-      }
+      //azureDefender: {
+      //  enabled: enableAzureDefender
+      //  logAnalyticsWorkspaceResourceId: !empty(monitoringWorkspaceId) ? monitoringWorkspaceId : null
+      //}
     } : null
   }
 }
