@@ -66,6 +66,7 @@ param aksClusterOutboundType string = 'loadBalancer'
 @allowed([
   'Free'
   'Paid'
+  'Standard'
 ])
 param aksClusterSkuTier string = 'Free'
 
@@ -112,7 +113,7 @@ param nodeResourceGroup string = '${resourceGroup().name}_aks_${name}_nodes'
 param authorizedIPRanges array = []
 
 @description('Optional. Whether to disable run command for the cluster or not.')
-param disableRunCommand bool = false
+param disableRunCommand bool = true
 
 @description('Optional. Specifies whether to create the cluster as a private cluster or not.')
 param enablePrivateCluster bool = false

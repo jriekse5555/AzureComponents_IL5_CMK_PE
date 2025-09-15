@@ -79,7 +79,8 @@
                     ],
                     "nodeTaints": [
                         "CriticalAddonsOnly=true:NoSchedule"
-                    ]
+                    ],
+                    "enableEncryptionAtHost": true
                 }
             ]
         },
