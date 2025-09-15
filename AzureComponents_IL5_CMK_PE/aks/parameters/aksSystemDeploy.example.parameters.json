@@ -3,10 +3,10 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "dnsZoneRgpName": {
-            "value": "<rg name>"
+            "value": "BuildingBlocks"
         },
         "dnsZoneRgpSubId": {
-            "value": "<subid>"
+            "value": "2658555b-efbe-4958-9088-475d8083bc0e"
         },
         "cmkDESRoles": {
             "value": [
@@ -17,9 +17,7 @@
             "value": "Standard_ZRS"
         },
         "fileShares": {
-            "value": [
-                "<filesharename>"
-            ]
+            "value": []
         },
         "aksClusterNetworkPlugin": {
             "value": "azure"
@@ -37,18 +35,18 @@
             "value": "172.17.0.1/16"
         },
         "aksClusterSkuTier": {
-            "value": "Paid"
+            "value": "Free"
         },
         "aksClusterKubernetesVersion": {
-            "value": "1.23.8"
+            "value": "1.30.10"
         },
         "aadProfileAdminGroupObjectIDs": {
             "value": [
-                "<objectid>"
+                "011101e7-60e7-4c4d-a4e0-03eacaaf9960"
             ]
         },
         "aksPrivateDNSZoneId": {
-            "value": "<aksprivatednszoneresourceid>"
+            "value": "/subscriptions/2658555b-efbe-4958-9088-475d8083bc0e/resourceGroups/buildingblocks/providers/Microsoft.Network/privateDnsZones/privatelink.eastus.azmk8s.io"
         },
         "aadProfileManaged": {
             "value": true
@@ -73,47 +71,15 @@
                     "maxCount": 3,
                     "vmSize": "standard_b2s",
                     "osType": "Linux",
-                    "storageProfile": "ManagedDisks",
                     "type": "VirtualMachineScaleSets",
                     "mode": "System",
-                    "vnetSubnetID": "<subnetresourceid>",
+                    "vnetSubnetID": "/subscriptions/2658555b-efbe-4958-9088-475d8083bc0e/resourceGroups/BuildingBlocks/providers/Microsoft.Network/virtualNetworks/BuildingBlocks/subnets/akssubnet",
                     "maxPods": 30,
                     "availabilityZones": [
                     ],
                     "nodeTaints": [
                         "CriticalAddonsOnly=true:NoSchedule"
                     ]
-                }
-            ]
-        },
-        "agentPools": {
-            "value": [
-                {
-                    "name": "nodepoolx",
-                    "vmSize": "standard_b2s",
-                    "osDiskSizeGB": 128,
-                    "count": 2,
-                    "osType": "Linux",
-                    "maxCount": 3,
-                    "minCount": 1,
-                    "enableEncryptionAtHost": true,
-                    "enableAutoScaling": true,
-                    "scaleSetPriority": "Regular",
-                    "scaleSetEvictionPolicy": "Delete",
-                    "nodeLabels": {
-                        "node":"nodepoolx"
-                    },
-                    "nodeTaints": [
-                        "nodepoolx=true:NoSchedule"
-                    ],
-                    "type": "VirtualMachineScaleSets",
-                    "availabilityZones": [
-                    ],
-                    "minPods": 1,
-                    "maxPods": 30,
-                    "storageProfile": "ManagedDisks",
-                    "mode": "User",
-                    "vnetSubnetID": "<subnetresourceid>"
                 }
             ]
         },
