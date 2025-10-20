@@ -141,6 +141,13 @@ param enableAzureDefender bool = false
 @description('Optional. Outbound IP Count for the Load balancer.')
 param managedOutboundIPCount int = 1
 
+@description('Optional. Specifies outbound (egress) routing method. - loadBalancer or userDefinedRouting.')
+@allowed([
+  'loadBalancer'
+  'userDefinedRouting'
+])
+param aksClusterOutboundType string = 'loadBalancer'
+
 @description('Optional. Public endpoint firewall.')
 var networkAcls = {
   bypass: 'AzureServices'
@@ -263,6 +270,7 @@ module aks '../../carmlBicepModules/Microsoft.ContainerService/managedClusters/d
     enableSecretRotation: enableSecretRotation
     enableAzureDefender: enableAzureDefender
     managedOutboundIPCount: managedOutboundIPCount
+    aksClusterOutboundType: aksClusterOutboundType
     monitoringWorkspaceId: logAnalyticsResourceId
     userAssignedIdentities: {
       '${aksUmi.outputs.resourceId}': {}
