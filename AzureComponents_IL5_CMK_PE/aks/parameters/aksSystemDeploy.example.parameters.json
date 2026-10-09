@@ -14,12 +14,10 @@
             ]
         },
         "storageAccountSku": {
-            "value": "Standard_ZRS"
+            "value": "Standard_LRS"
         },
         "fileShares": {
-            "value": [
-                "<filesharename>"
-            ]
+            "value": []
         },
         "aksClusterNetworkPlugin": {
             "value": "azure"
@@ -33,14 +31,11 @@
         "aksClusterDnsServiceIP": {
             "value": "10.100.0.10"
         },
-        "aksClusterDockerBridgeCidr": {
-            "value": "172.17.0.1/16"
-        },
         "aksClusterSkuTier": {
-            "value": "Paid"
+            "value": "Free"
         },
         "aksClusterKubernetesVersion": {
-            "value": "1.23.8"
+            "value": "1.35.5"
         },
         "aadProfileAdminGroupObjectIDs": {
             "value": [
@@ -71,9 +66,8 @@
                     "enableAutoScaling": true,
                     "minCount": 1,
                     "maxCount": 3,
-                    "vmSize": "standard_b2s",
+                    "vmSize": "standard_b4ms",
                     "osType": "Linux",
-                    "storageProfile": "ManagedDisks",
                     "type": "VirtualMachineScaleSets",
                     "mode": "System",
                     "vnetSubnetID": "<subnetresourceid>",
@@ -82,38 +76,8 @@
                     ],
                     "nodeTaints": [
                         "CriticalAddonsOnly=true:NoSchedule"
-                    ]
-                }
-            ]
-        },
-        "agentPools": {
-            "value": [
-                {
-                    "name": "nodepoolx",
-                    "vmSize": "standard_b2s",
-                    "osDiskSizeGB": 128,
-                    "count": 2,
-                    "osType": "Linux",
-                    "maxCount": 3,
-                    "minCount": 1,
-                    "enableEncryptionAtHost": true,
-                    "enableAutoScaling": true,
-                    "scaleSetPriority": "Regular",
-                    "scaleSetEvictionPolicy": "Delete",
-                    "nodeLabels": {
-                        "node":"nodepoolx"
-                    },
-                    "nodeTaints": [
-                        "nodepoolx=true:NoSchedule"
                     ],
-                    "type": "VirtualMachineScaleSets",
-                    "availabilityZones": [
-                    ],
-                    "minPods": 1,
-                    "maxPods": 30,
-                    "storageProfile": "ManagedDisks",
-                    "mode": "User",
-                    "vnetSubnetID": "<subnetresourceid>"
+                    "enableEncryptionAtHost": true
                 }
             ]
         },

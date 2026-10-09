@@ -163,9 +163,9 @@ var diagnosticsMetrics = [for metric in diagnosticMetricsToEnable: {
   }
 }]
 
-var maxNameLength = 24
-var uniqueStorageNameUntrim = uniqueString('Storage Account${basetime}')
-var uniqueStorageName = length(uniqueStorageNameUntrim) > maxNameLength ? substring(uniqueStorageNameUntrim, 0, maxNameLength) : uniqueStorageNameUntrim
+//var maxNameLength = 24
+//var uniqueStorageNameUntrim = uniqueString('Storage Account${basetime}')
+//var uniqueStorageName = length(uniqueStorageNameUntrim) > maxNameLength ? substring(uniqueStorageNameUntrim, 0, maxNameLength) : uniqueStorageNameUntrim
 
 var supportsBlobService = storageAccountKind == 'BlockBlobStorage' || storageAccountKind == 'BlobStorage' || storageAccountKind == 'StorageV2' || storageAccountKind == 'Storage'
 var supportsFileService = storageAccountKind == 'FileStorage' || storageAccountKind == 'StorageV2' || storageAccountKind == 'Storage'
@@ -195,8 +195,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = if (
   scope: resourceGroup(split(cMKKeyVaultResourceId, '/')[2], split(cMKKeyVaultResourceId, '/')[4])
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
-  name: !empty(name) ? name : uniqueStorageName
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
+  name: name
   location: location
   kind: storageAccountKind
   sku: {
@@ -244,7 +244,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
       ipRules: (!empty(networkAcls) && contains(networkAcls, 'ipRules')) ? networkAcls.ipRules : []
     } : null
     allowBlobPublicAccess: allowBlobPublicAccess
-    publicNetworkAccess: publicNetworkAccess
+    publicNetworkAccess: 'disabled'
     azureFilesIdentityBasedAuthentication: !empty(azureFilesIdentityBasedAuthentication) ? azureFilesIdentityBasedAuthentication : null
   }
 }

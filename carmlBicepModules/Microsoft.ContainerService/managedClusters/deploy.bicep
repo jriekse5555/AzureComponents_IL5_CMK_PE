@@ -42,9 +42,6 @@ param aksClusterServiceCidr string = ''
 @description('Optional. Specifies the IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in serviceCidr.')
 param aksClusterDnsServiceIP string = ''
 
-@description('Optional. Specifies the CIDR notation IP range assigned to the Docker bridge network. It must not overlap with any Subnet IP ranges or the Kubernetes service address range.')
-param aksClusterDockerBridgeCidr string = ''
-
 @description('Optional. Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools.')
 @allowed([
   'basic'
@@ -66,6 +63,7 @@ param aksClusterOutboundType string = 'loadBalancer'
 @allowed([
   'Free'
   'Paid'
+  'Standard'
 ])
 param aksClusterSkuTier string = 'Free'
 
@@ -112,7 +110,7 @@ param nodeResourceGroup string = '${resourceGroup().name}_aks_${name}_nodes'
 param authorizedIPRanges array = []
 
 @description('Optional. Whether to disable run command for the cluster or not.')
-param disableRunCommand bool = false
+param disableRunCommand bool = true
 
 @description('Optional. Specifies whether to create the cluster as a private cluster or not.')
 param enablePrivateCluster bool = false
@@ -445,7 +443,6 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-10-01' 
       podCidr: !empty(aksClusterPodCidr) ? aksClusterPodCidr : null
       serviceCidr: !empty(aksClusterServiceCidr) ? aksClusterServiceCidr : null
       dnsServiceIP: !empty(aksClusterDnsServiceIP) ? aksClusterDnsServiceIP : null
-      //dockerBridgeCidr: !empty(aksClusterDockerBridgeCidr) ? aksClusterDockerBridgeCidr : null
       outboundType: aksClusterOutboundType
       loadBalancerSku: aksClusterLoadBalancerSku
       loadBalancerProfile: managedOutboundIPCount != 0 ? lbProfile : null
