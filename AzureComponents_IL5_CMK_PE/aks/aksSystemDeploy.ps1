@@ -48,6 +48,7 @@ $kvtAadObjId='<object id>'
 $kvtPrivateDNSZoneResourceId='<resource id>'
 
 $kvtName=$prj+$il+"kvt"
+Write-Host $kvtName
 az keyvault show -n $kvtName -g $deployRgp
 if (0 -ne $LASTEXITCODE) {
   $deploymentName = "keyvault-deploy-$((get-date).ToString('MMddyyyy-hhmmss'))"
@@ -84,3 +85,11 @@ az aks disable-addons -n "$prj-$il-aks" -g $deployRgp -a ingress-appgw
 $acrName = $prj+$il+"acr"
 az aks update -n "$prj-$il-aks" -g $deployRgp --attach-acr $acrName
 
+$aksClusterName=$prj+"-"+$il+"-"+"aks"
+$secretProviderObjectId = az aks show -g $deployRgp -n $aksClusterName --query addonProfiles.azureKeyvaultSecretsProvider.identity.objectId -o tsv
+az keyvault set-policy --resource-group $deployRgp -n $kvtName --secret-permissions get --object-id $secretProviderObjectId
+az keyvault set-policy --resource-group $deployRgp -n $kvtName --key-permissions get --object-id $secretProviderObjectId
+az keyvault set-policy --resource-group $deployRgp -n $kvtName --certificate-permissions get --object-id $secretProviderObjectId
+
+#Turn off container insights to save cost
+az aks disable-addons -a monitoring -n $aksClusterName -g $deployRgp

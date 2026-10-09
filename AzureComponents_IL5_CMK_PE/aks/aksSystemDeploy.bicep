@@ -114,7 +114,7 @@ param aadProfileEnableAzureRBAC bool = true
 param disableLocalAccounts bool = true
 
 @description('Optional. Name of the resource group containing agent pool nodes.')
-param nodeResourceGroup string = 'AKS-NODE-01'
+param nodeResourceGroup string = toLower('${prj}-${il}-AKS-nodes')
 
 @description('Optional. Specifies whether to create the cluster as a private cluster or not.')
 param enablePrivateCluster bool = true
@@ -140,6 +140,13 @@ param enableAzureDefender bool = false
 
 @description('Optional. Outbound IP Count for the Load balancer.')
 param managedOutboundIPCount int = 1
+
+@description('Optional. Specifies outbound (egress) routing method. - loadBalancer or userDefinedRouting.')
+@allowed([
+  'loadBalancer'
+  'userDefinedRouting'
+])
+param aksClusterOutboundType string = 'loadBalancer'
 
 @description('Optional. Public endpoint firewall.')
 var networkAcls = {
@@ -247,7 +254,6 @@ module aks '../../carmlBicepModules/Microsoft.ContainerService/managedClusters/d
     aksClusterNetworkPlugin: aksClusterNetworkPlugin
     aksClusterServiceCidr: aksClusterServiceCidr
     aksClusterDnsServiceIP: aksClusterDnsServiceIP
-    aksClusterDockerBridgeCidr: aksClusterDockerBridgeCidr
     aksClusterSkuTier: aksClusterSkuTier
     aksClusterKubernetesVersion: aksClusterKubernetesVersion
     aadProfileManaged: aadProfileManaged
@@ -263,6 +269,7 @@ module aks '../../carmlBicepModules/Microsoft.ContainerService/managedClusters/d
     enableSecretRotation: enableSecretRotation
     enableAzureDefender: enableAzureDefender
     managedOutboundIPCount: managedOutboundIPCount
+    aksClusterOutboundType: aksClusterOutboundType
     monitoringWorkspaceId: logAnalyticsResourceId
     userAssignedIdentities: {
       '${aksUmi.outputs.resourceId}': {}

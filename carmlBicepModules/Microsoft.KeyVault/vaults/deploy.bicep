@@ -154,10 +154,10 @@ var diagnosticsMetrics = [for metric in diagnosticMetricsToEnable: {
   }
 }]
 
-var maxNameLength = 24
-var uniquenameUntrim = uniqueString('Key Vault${baseTime}')
-var uniquename = (length(uniquenameUntrim) > maxNameLength ? substring(uniquenameUntrim, 0, maxNameLength) : uniquenameUntrim)
-var name_var = !empty(name) ? name : uniquename
+// var maxNameLength = 24
+// var uniquenameUntrim = uniqueString('Key Vault${baseTime}')
+// var uniquename = (length(uniquenameUntrim) > maxNameLength ? substring(uniquenameUntrim, 0, maxNameLength) : uniquenameUntrim)
+var name_var = name 
 
 var networkAcls_var = {
   bypass: !empty(networkAcls) ? networkAcls.bypass : null
